@@ -9,13 +9,15 @@
 </head>
 <body>
     <div>
-        <div for-each="todoListItems">
+        <div for-each="todoList">
             <div id="todo-loader">Loading...</div>
         </div>
         <label for="new-item">
             New item:
         </label>
         <input type="text" data-bind="newItem" id="new-item">
+        <button on-click="addItem" id="add-item">Add Item</button>
+<!--        <input type="text" data-bind="newItem" id="new-item-disabled" disabled>-->
     </div>
 </body>
 </html>
