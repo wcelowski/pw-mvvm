@@ -13,9 +13,9 @@ export default class todoListModel implements Model {
         return this.todoItems;
     }
 
-    public addItem(todoItem: string)
+    public addItems(todoItems: string[])
     {
-        this.todoItems.push(todoItem)
+        this.todoItems.concat(todoItems)
     }
 }
 

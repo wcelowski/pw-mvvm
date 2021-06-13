@@ -18,9 +18,11 @@ const data: Data = {
 };
 
 const applySubscribers = () => {
-    data.todoList.subscribe((value: todoListModel) => applyForEach(value.getItems()));
-    // data.todoListItems.subscribe((values: any) => applyForEach(values));
-    data.isLoading.subscribe((isLoading: boolean) => handlers.initializeLoader(isLoading))
+    data.todoListItems.subscribe((values: string[]) => applyForEach(values));
+    data.todoList.subscribe((value: any) => {
+        data.todoListItems.setValue(value.getItems());
+    })
+    data.isLoading.subscribe((isLoading: boolean) => handlers.initializeLoader(isLoading));
 }
 
 const applyDataBindings = () => {
@@ -34,18 +36,19 @@ const applyDataBindings = () => {
     });
 }
 
-const handlers = {
+type Handlers = { [key: string]: Function }
+
+const handlers: Handlers = {
     fetchToDoList: async (): Promise<void> => {
         data.isLoading.setValue(true);
         const todoList = await (inMemoryToDoRepository.find() as Promise<todoListModel>);
         data.todoList.setValue(todoList);
-        // const todoListItems = todoList.getItems();
-        // data.todoListItems.setValue(todoListItems);
+        data.todoListItems.setValue(data.todoList.getValue().getItems());
         data.isLoading.setValue(false);
     },
     initializeLoader: (isLoading: boolean) => {
         document.getElementById('todo-loader')
-            .setAttribute('style', `display: ${isLoading ? 'block' : 'none'}`);
+            ?.setAttribute('style', `display: ${isLoading ? 'block' : 'none'}`);
     },
     addItem: () => {
         data.todoList.setValue(
@@ -72,18 +75,16 @@ const applyCommandHandlers = () => {
 }
 
 const applyForEach = (values: Array<any>) => {
-    console.log(values);
     document.querySelectorAll('[for-each]')
         .forEach(element => {
             const prop = element.getAttribute('for-each')
-            // @ts-ignore
-            // if ((data[prop] as Observable).getValue() === values) {
+            if ((data[prop] as Observable).getValue() === values) {
                 let foreachHtml: string = '';
                 values.forEach(value => {
                     foreachHtml += `<li>${value}</li>`
                 })
-                element.innerHTML += `<ul>${foreachHtml}</ul>`
-            // }
+                element.innerHTML = `<ul>${foreachHtml}</ul>`
+            }
         })
 }
 
