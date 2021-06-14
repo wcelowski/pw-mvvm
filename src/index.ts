@@ -1,4 +1,5 @@
-import {main} from './viewModels/todoViewModel'
+import todoViewModel from "./viewModels/todoViewModel";
+
 window.addEventListener("load", () => {
-    setTimeout(main, 0)
+    setTimeout(todoViewModel.main, 0)
 })
