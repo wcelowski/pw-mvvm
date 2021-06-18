@@ -2,27 +2,21 @@ import Observable from "./observable";
 
 type Handlers = { [key: string]: Function }
 type Data = { [key: string]: Observable }
+type CommandHandler = (this: HTMLButtonElement, ev: MouseEvent) => any;
 
-interface ViewModel {
-    main?: () => void;
-}
+export default class ViewModel {
+    protected data: Data = {}
+    protected handlers: Handlers = {};
 
-export default class viewModel implements ViewModel {
-    public main () {
-        this.applySubscribers();
-        this.applyMounted();
-        this.applyDataBindings();
-        this.applyCommandHandlers();
-    }
+    public applySubscribers () {
+        throw new Error('Not implemented');
+    };
 
-    protected data: {}
-    protected handlers: {};
+    public applyMounted () {
+        throw new Error('Not implemented');
+    };
 
-    protected applySubscribers () {};
-
-    protected applyMounted () {};
-
-    protected applyDataBindings () {
+    public applyDataBindings () {
         document.querySelectorAll("[data-bind]").forEach(element => {
             if (element instanceof HTMLInputElement) {
                 const observable = this.data[element.getAttribute("data-bind")];
@@ -33,26 +27,26 @@ export default class viewModel implements ViewModel {
         });
     }
 
-    protected applyCommandHandlers () {
+    public applyCommandHandlers () {
         document.querySelectorAll('[on-click]')
             .forEach(element => {
                 const prop = element.getAttribute('on-click');
-                // @ts-ignore
-                element.addEventListener('click', handlers[prop], false)
+                if (element instanceof HTMLButtonElement) {
+                    element.addEventListener('click', (this.handlers[prop] as CommandHandler), false)
+                }
             })
     }
 
-    protected applyForEach (values: Array<any>) {
+    public applyForEach (values: Array<any>) {
         document.querySelectorAll('[for-each]')
             .forEach(element => {
                 const prop = element.getAttribute('for-each')
-                // @ts-ignore
                 if ((this.data[prop] as Observable).getValue() === values) {
                     let foreachHtml: string = '';
                     values.forEach(value => {
-                        foreachHtml += `<li>${value}</li>`
+                        foreachHtml += `<li class="list-group-item">${value}</li>`
                     })
-                    element.innerHTML = `<ul>${foreachHtml}</ul>`
+                    element.innerHTML = `<ul class="list-group py-5">${foreachHtml}</ul>`
                 }
             })
     }

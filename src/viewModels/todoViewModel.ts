@@ -1,17 +1,17 @@
 import {inMemoryToDoRepository} from "../repositories/inMemoryTodoRepository";
 import todoListModel from "../models/todoListModel";
 import Observable from "../infrastructure/observable";
-import viewModel from "../infrastructure/viewModel";
+import ViewModel from "../infrastructure/viewModel";
 
-export default class todoViewModel extends viewModel {
+class TodoViewModel extends ViewModel {
     protected data = {
         isLoading: new Observable(false),
         todoList: new Observable(null),
         todoListItems: new Observable([]),
         newItem: new Observable(''),
-    };
+    }
 
-    protected applySubscribers () {
+    public applySubscribers() {
         this.data.todoListItems.subscribe((values: string[]) => this.applyForEach(values));
         this.data.todoList.subscribe((value: any) => {
             this.data.todoListItems.setValue(value.getItems());
@@ -31,18 +31,22 @@ export default class todoViewModel extends viewModel {
             document.getElementById('todo-loader')
                 ?.setAttribute('style', `display: ${isLoading ? 'block' : 'none'}`);
         },
-        addItem: () => {
+        addItem: (item: string) => {
             this.data.todoList.setValue(
                 new todoListModel([...this.data.todoListItems.getValue(), this.data.newItem.getValue()])
             );
         }
     }
 
-    protected mounted = {
-        fetchToDoList: this.handlers.fetchToDoList
+    public applyMounted () {
+        this.handlers.fetchToDoList.call(this.data);
     }
+}
 
-    protected applyMounted () {
-        this.mounted.fetchToDoList.call(this.data);
-    }
+export default function initializer() {
+    const todoViewModel = new TodoViewModel();
+    todoViewModel.applySubscribers();
+    todoViewModel.applyDataBindings();
+    todoViewModel.applyCommandHandlers();
+    todoViewModel.applyMounted();
 }

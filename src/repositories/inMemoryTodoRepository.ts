@@ -1,7 +1,7 @@
-import todoListModel, {Model} from "../models/todoListModel";
+import TodoListModel from "../models/todoListModel";
 
-type Repository = {
-    find: () => Promise<Model>;
+type ToDoRepository = {
+    find: () => Promise<TodoListModel>;
 }
 
 const find = () => {
@@ -13,7 +13,7 @@ const find = () => {
 }
 
 
-const toDoList: todoListModel = new todoListModel(
+const toDoList: TodoListModel = new TodoListModel(
     [
         'item1',
         'item2',
@@ -21,7 +21,7 @@ const toDoList: todoListModel = new todoListModel(
     ]
 );
 
-const inMemoryToDoRepository: Repository = {
+const inMemoryToDoRepository: ToDoRepository = {
     find: find
 }
 

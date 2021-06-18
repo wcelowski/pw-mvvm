@@ -1,5 +1,5 @@
-import todoViewModel from "./viewModels/todoViewModel";
+import initializer from "./viewModels/todoViewModel";
 
 window.addEventListener("load", () => {
-    setTimeout(todoViewModel.main, 0)
+    setTimeout(initializer, 0)
 })

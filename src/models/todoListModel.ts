@@ -1,9 +1,7 @@
-interface Model {}
+export default class TodoListModel {
+    private readonly todoItems: string[] = [];
 
-export default class todoListModel implements Model {
-    private readonly todoItems: string[];
-
-    public constructor(todoItems: string[])
+    public constructor(todoItems?: string[])
     {
         this.todoItems = todoItems;
     }
@@ -13,10 +11,8 @@ export default class todoListModel implements Model {
         return this.todoItems;
     }
 
-    public addItems(todoItems: string[])
+    public addItem(todoItem: string)
     {
-        this.todoItems.concat(todoItems)
+        this.todoItems.push(todoItem)
     }
 }
-
-export {Model}
